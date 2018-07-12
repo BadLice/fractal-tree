@@ -43,7 +43,7 @@ function getAngle()
 
 function getScaleIndex()
 {
-  return 5/8;
+  return 7.5/10;
 }
 
 function getStartingLength()
