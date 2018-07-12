@@ -1,62 +1,56 @@
+var tree= [];
 
-function setup() {
+function setup()
+{
   createCanvas(720, 400);
-  scaleIndex=3/4;
-  var startingAngle = 0.664;
-  slider = createSlider(0.1,1.3,startingAngle, 0.001)
+  slider = createSlider(0.1,1.3,PI/2-1.0472, 0.001);
+  precSliderVal = 0;
 }
 
 function draw()
 {
-  background(51);
-  stroke(255);
+  if(slider.value()!==precSliderVal)
+  {
+    buildTree();
+    precSliderVal = slider.value();
+  }
 
-  var length = 100
-  var level = 1
+  background(51)
+  stroke(255)
+  stop = false;
+  for(i=0;i<tree.length && !stop;i++)
+  {
+    if(tree[i].level>getMaxLevel())
+      stop=true;
+    else
+    {
+      colorf(tree[i])
+      tree[i].draw();
+      tree[i].createLeft();
+      tree[i].createRight();
+    }
+  }
 
-  translate(width/2,height)
-  line(0,0,0,-length)
 
-  push()
-  branch(level,length,slider.value())
-  pop()
-  push()
-  branch(level,length,-slider.value())
-  pop()
 
   document.getElementById("valore").innerHTML=slider.value()
 
 }
 
-function branch(level,length,a)
+function buildTree()
 {
-  digit1 = floor(level*5000000000/pow(255,1)) % 255
-  digit2 = floor(level*5000000000/pow(255,2)) % 255
-  digit3 = floor(level*5000000000/pow(255,3)) % 255
+
+  var first = new Branch(1,createVector(width/2,height),createVector(width/2,height-getStartingLength()));
+
+  tree = [];
+  tree[0]=first;
+}
+
+function colorf(o)
+{
+  digit1 = floor(o.level*5000000000/pow(255,1)) % 255
+  digit2 = floor(o.level*5000000000/pow(255,2)) % 255
+  digit3 = floor(o.level*5000000000/pow(255,3)) % 255
 
   stroke(digit1,digit2,digit3)
-
-  translate(0,-length)
-
-  rotate(a)
-  line(0,0,0,-length*scaleIndex)
-
-  if(length > 4)
-  {
-    push()
-    branch(level++,length*scaleIndex,a)
-    pop()
-
-    // push()
-    // branch(level++,length*scaleIndex,a*2)
-    // pop()
-
-    push()
-    branch(level++,length*scaleIndex,-a)
-    pop()
-
-    // push()
-    // branch(level++,length*scaleIndex,-a*2)
-    // pop()
-  }
 }
